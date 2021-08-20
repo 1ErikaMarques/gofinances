@@ -7,7 +7,7 @@ import AppLoading from 'expo-app-loading'
 
 import { ThemeProvider } from 'styled-components';
 
-import { NavigationContainer } from '@react-navigation/native'
+import { Routes } from './src/routes';
 
 import { 
   useFonts,
@@ -18,6 +18,9 @@ import {
 
 import theme from './src/global/styles/theme';
 import { AppRoutes } from './src/routes/app.routes';
+import { SignIn } from './src/screens/SignIn';
+import { AuthProvider, useAuth } from './src/hooks/auth';//contexto
+
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -29,13 +32,15 @@ export default function App() {
     return <AppLoading />
   }
   return (
-  <ThemeProvider theme={theme}>
-    <NavigationContainer>
+  <ThemeProvider theme={theme}>{/* Provider pq ele sera usado por todas as interfaces que ele esta por volta */}
+    
       <StatusBar barStyle="light-content"/>
-      <AppRoutes />
-    </NavigationContainer>
+      <AuthProvider>{/* valor atual do contexto */}
+        <Routes />
+      </AuthProvider>
+    
   </ThemeProvider>
-  );
+  )
 }
 
 
