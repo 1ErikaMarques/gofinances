@@ -9,6 +9,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';//pegar a 
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useTheme } from 'styled-components';
+import { useAuth } from '../../hooks/auth';
 
 import { HistoryCard } from '../../components/HistoryCard';
 
@@ -26,6 +27,7 @@ import {
 } from './styles';
 
 import { categories } from '../../utils/categories';
+
 
 
 
@@ -52,6 +54,7 @@ export function Resume(){
   const [totalByCategories, setTotalByCategories] = useState<CategoryData[]>([]);//o tipo e um [] de CategoryData
 
   const theme = useTheme();//cores do tema
+  const { user } = useAuth();
 
   function handleDateChange(action: 'next' | 'previous'){
     if(action === 'next'){
@@ -67,7 +70,7 @@ export function Resume(){
   async function loadData(){
     setIsLoading(true);//animacao de carregamento
 
-    const collectionKey = '@gofinances:transactions'; //chave // pegar as transacoes          
+    const collectionKey = `@gofinances:transactions_user:${user.id}`; //chave // pegar as transacoes   //vinculando a conta ao usuario       
     const response = await AsyncStorage.getItem(collectionKey);//recuperando todos os dados que estao no async-storage
     const responseFormatted = response ? JSON.parse(response) : [];//se data tiver algum dado converte para json senao retorna um array vazio
     

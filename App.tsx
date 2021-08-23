@@ -28,9 +28,13 @@ export default function App() {
     Poppins_500Medium,
     Poppins_700Bold
   });
-  if(!fontsLoaded) {
+
+  const { userStorageLoading } = useAuth();
+  
+  if(!fontsLoaded || userStorageLoading) {//usuario carregando
     return <AppLoading />
   }
+
   return (
   <ThemeProvider theme={theme}>{/* Provider pq ele sera usado por todas as interfaces que ele esta por volta */}
     

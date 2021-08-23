@@ -3,7 +3,8 @@ import { Modal, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import * as Yup from 'yup'; //criar o padrao dos inputs
 import { yupResolver } from '@hookform/resolvers/yup';//forcar para que o submits dos inputs siga um padrao
 import { useForm } from 'react-hook-form';
-import { useNavigation } from '@react-navigation/native'; //hook para fazer a navegacao
+import { useNavigation } from '@react-navigation/native'; //fazer a navegacao
+import { useAuth } from '../../hooks/auth';
 
 import AsyncStorage from '@react-native-async-storage/async-storage'; //guardar os dados do usuario no dispositivo
 import uuid from 'react-native-uuid';//gerar id
@@ -15,6 +16,7 @@ import { CategorySelectButton } from '../../components/Form/CategorySelectButton
 import { CategorySelect } from '../CategorySelect';
 
 import { Container, Header, Title, Form, Fields, TransactionsTypes } from './styles';
+
 
 interface FormData {
   name: string;
@@ -37,6 +39,8 @@ const schema = Yup.object().shape({
 export function Register(){  
   const [transactionType, setTransactionType] = useState('');
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);  
+
+  const { user } = useAuth(); //recuperando o id do usuario do contexto
 
   const [category, setCategory] = useState({
     key: 'category',
@@ -78,7 +82,7 @@ export function Register(){
         date: new Date() //pegando a data atual
       }
      try { //estrutura de tratativas de erros   //salvando no asyncStorage  
-        const collectionKey = '@gofinances:transactions'; //chave // guardar dados   
+        const collectionKey = `@gofinances:transactions_user:${user.id}`; //chave // guardar dados //vinculando a conta ao usuario  
         
         const data = await AsyncStorage.getItem(collectionKey);//recuperando todos os dados que estao no async-storage
         const currentData= data ? JSON.parse(data) : [];//se data tiver algum dado converte para json senao retorna um array vazio

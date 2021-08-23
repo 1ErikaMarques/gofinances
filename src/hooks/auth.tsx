@@ -1,6 +1,6 @@
  import React,  { createContext, ReactNode, useContext, useState, useEffect } from "react";//funcao para conseguir criar o contexto
 
- const { CLIENT_ID } = process.env;//buscando de um arquivo de embiente
+ const { CLIENT_ID } = process.env;//buscando de um arquivo de ambiente
  const { REDIRECT_URI } = process.env;
  
 
@@ -25,6 +25,8 @@ interface User {
   user: User;//tipagem valor 
   signInWithGoogle(): Promise<void>;
   signInWithApple(): Promise<void>;
+  signOut(): Promise<void>;
+  userStorageLoading: boolean;
  }
 
  interface AuthorizationResponse {
@@ -85,11 +87,14 @@ interface User {
         });
         
         if(credential){
+          const name = credential.fullName!.givenName!;
+          const photo = `https://eu.ui-avatars.com/api/?name=${name}&length=1`
+
           const userLoggedApple = {
             id: String(credential.user),
             email: credential.email!,//! garantindo que smp ira ter 
-            name: credential.fullName!.givenName!,
-            photo: undefined,
+            name,
+            photo,
           };
         setUser(userLoggedApple);
         await AsyncStorage.setItem(userStorageKey, JSON.stringify(userLoggedApple));
@@ -99,6 +104,11 @@ interface User {
       }catch (error) {
         throw new Error(error);
       }
+    }
+
+    async function signOut(){
+      setUser({} as User);
+      await AsyncStorage.removeItem(userStorageKey);
     }
 
     useEffect(() => {//quando atualizar n sair das telas que estao autenticadas
@@ -117,7 +127,7 @@ interface User {
     },[]);
 
     return(
-       <AuthContext.Provider value={{ user, signInWithGoogle, signInWithApple }}>{/* valor atual do contexto */}
+       <AuthContext.Provider value={{ user, signInWithGoogle, signInWithApple, signOut, userStorageLoading }}>{/* valor atual do contexto */}
         { children }
       </AuthContext.Provider>
     )

@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
-import { Alert } from 'react-native';
+import { useState } from "react";
+import { ActivityIndicator, Alert, Platform } from 'react-native';
 import { RFValue } from "react-native-responsive-fontsize";
+import { useTheme } from 'styled-components'
 
 import AppleSvg from '../../assets/apple.svg';
 import GoogleSvg from '../../assets/google.svg';
@@ -20,28 +22,34 @@ import {
 } from "./styles";
 
 
-export function SignIn() {
+export function SignIn() {  
  /*  const data = useContext(AuthContext);//passando qual contexto eu quero acessar
   console.log(data) */
-   const { user, signInWithGoogle, signInWithApple } = useAuth();
+   const [isLoading, setIsLoading] = useState(false);
+   const { signInWithGoogle, signInWithApple } = useAuth();
+   const theme = useTheme();
 
    async function handleSignInWithGoogle() {
     try {
-      await signInWithGoogle();//funcao esta vindo do auth.tsx
+      setIsLoading(true) //no momento que o usuario tentar conectar com a conta google/ativando a animacao  loading
+      return await signInWithGoogle();//funcao esta vindo do auth.tsx//se deu certo return
 
     } catch (error) {
       console.log(error);
       Alert.alert('Não foi possivel conectar a conta Google');
-    }
+      setIsLoading(false);
+    }   
    }
    async function handleSignInWithApple() {
     try {
-      await signInWithApple();//funcao esta vindo do auth.tsx
+      setIsLoading(true)//efeito de carregamento
+      return await signInWithApple();//funcao esta vindo do auth.tsx
 
     } catch (error) {
       console.log(error);
       Alert.alert('Não foi possivel conectar a conta Apple');
-    }
+      setIsLoading(false);//desabilita a animacao do  loading se der algum erro
+    } 
    }
   
 
@@ -61,10 +69,17 @@ export function SignIn() {
       </Header>
 
       <Footer>
-        <FooterWrapper>
+        <FooterWrapper>      
+
           <SignInSocialButton title="Entrar com o Google" svg={GoogleSvg}onPress={handleSignInWithGoogle}/>
+        
+        { 
+          Platform.OS === 'ios' &&
           <SignInSocialButton title="Entrar com Apple" svg={AppleSvg}onPress={handleSignInWithApple}/>
+        }     
+
         </FooterWrapper>
+        { isLoading && <ActivityIndicator color ={theme.colors.shape} style={{ marginTop: 18 }} />}{/* se isLoading e vdd */}
       </Footer>
     </Container>
   ) 
