@@ -1,23 +1,23 @@
 # gofinances
 
-# Descrição
-Aplicativo para gerenciar finanças.
+# Description
+Application to manage finances.
 
-Esta aplicação web permite: 
-  * Login social (Google, Apple)
-  * Cadastrar entradas e saidas financeiras
-  * Visualizar listagem com as entradas e saidas
-  * Visualizar um grafico com os gastos
+This application allows: 
+  * Social log in  (Google, Apple)
+  * Register financial entries and exits
+  * View listing with inputs and outputs
+  * View a graph with expenses
   * Logout
  
 
-# Tecnologias
+# Technologies
   * React Native
     * TypeScript  
   * CSS
     * Styled Components
 
-# Dependências
+# Dependencies
   * react-native-uuid
   * react-hook-form
   * @hookform/resolvers/yup
